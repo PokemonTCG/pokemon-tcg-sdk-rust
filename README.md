@@ -13,8 +13,9 @@ pokemon-tcg-sdk = "0.1.1"
 
 ### Using an API Key
 ```rust 
-// This method fails if a TLS backend cannot be initialized, or the resolver cannot load the system configuration.
-let client = Client::new(Some("YOUR_API_KEY"))?;
+// This method fails for the same reasons a reqwest::ClientBuilder would fail (TLS, system config)
+// or if your API key contains invalid characters for a header.
+let client = Client::with_api_key("YOUR_API_KEY")?;
 ```
 
 
@@ -49,7 +50,7 @@ match cards {
 
 // You can also construct a SearchCardsRequest with more parameters
 let search_request = SearchCardsRequest {
-    query: Some(String::from_str("name:celebi")),
+    query: Some(String::from("name:celebi")),
     page: Some(10),
     page_size: None,
     order_by: None,
@@ -101,7 +102,7 @@ match sets {
 
 // You can also construct a SearchSetsRequest with more parameters
 let search_request = SearchSetsRequest {
-    query: Some(String::from_str("series:base")),
+    query: Some(String::from("series:base")),
     page: Some(2),
     page_size: None,
     order_by: None,

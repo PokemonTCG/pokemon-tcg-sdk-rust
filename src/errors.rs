@@ -27,6 +27,10 @@ pub enum ClientError {
     /// Error occurred before the body could be decoded
     #[error("An error occurred while attempting to make a request.")]
     RequestError(#[source] reqwest::Error),
+    #[error("An error occurred while constructing the client.")]
+    ConstructionFailed(#[source] reqwest::Error),
+    #[error("The API key is invalid.")]
+    InvalidApiKey(#[source] reqwest::header::InvalidHeaderValue),
 }
 
 /// The root response body for an error
@@ -58,6 +62,16 @@ impl From<ErrorEnvelope> for ClientError {
 
 impl From<reqwest::Error> for ClientError {
     fn from(e: reqwest::Error) -> Self {
+        if e.is_builder() {
+            return ClientError::ConstructionFailed(e);
+        }
+
         ClientError::RequestError(e)
+    }
+}
+
+impl From<reqwest::header::InvalidHeaderValue> for ClientError {
+    fn from(e: reqwest::header::InvalidHeaderValue) -> Self {
+        ClientError::InvalidApiKey(e)
     }
 }

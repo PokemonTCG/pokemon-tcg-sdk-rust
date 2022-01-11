@@ -1,6 +1,5 @@
 use crate::errors::{ClientError, ErrorEnvelope};
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 
 pub struct Client {
     pub(super) base_url: String,
@@ -8,23 +7,44 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(api_key: Option<&str>) -> Result<Self, Box<dyn Error>> {
+    /// Constructs a new client
+    /// 
+    /// # Errors
+    /// This method fails if the API key is invalid ("\n" etc.) 
+    /// or if a TLS backend cannot be initialized, or the resolver
+    /// cannot load the system configuration.
+    pub fn new(api_key: Option<&str>) -> Result<Self, ClientError> {
         Ok(Client {
             base_url: String::from(r#"https://api.pokemontcg.io/v2"#),
             http_client: Client::get_http_client(api_key)?,
         })
     }
 
-    pub fn with_base_url(base_url: &str, api_key: Option<&str>) -> Result<Self, Box<dyn Error>> {
+    /// Constructs a client with a different base url than the default for the API.
+    ///
+    /// # Errors
+    /// This method fails if the API key is invalid ("\n" etc.) 
+    /// or if a TLS backend cannot be initialized, or the resolver
+    /// cannot load the system configuration.
+    pub fn with_base_url(base_url: &str, api_key: Option<&str>) -> Result<Self, ClientError> {
         Ok(Client {
             base_url: String::from(base_url),
             http_client: Client::get_http_client(api_key)?,
         })
     }
 
-    pub(super) fn get_http_client(
-        api_key: Option<&str>,
-    ) -> Result<reqwest::Client, Box<dyn Error>> {
+    /// Constructs a client with an API key that will be passed on every request.
+    /// 
+    /// # Errors
+    /// This method fails if the API key is invalid ("\n" etc.) 
+    /// or if a TLS backend cannot be initialized, or the resolver
+    /// cannot load the system configuration.
+    pub fn with_api_key(api_key: &str) -> Result<Self, ClientError> {
+        Client::new(Some(api_key))
+    }
+
+    /// Builds the reqwest http client that will be used for all API requests
+    pub(super) fn get_http_client(api_key: Option<&str>) -> Result<reqwest::Client, ClientError> {
         let mut http_client = reqwest::Client::builder();
         if let Some(key) = api_key {
             let mut headers = reqwest::header::HeaderMap::new();
@@ -35,6 +55,8 @@ impl Client {
         http_client.build().map_err(|e| e.into())
     }
 
+    /// Parses the response from the API into either a generic data envelope ({data: T}) or 
+    /// an error envelope ({error: ...}) and returns T if successful
     pub(super) fn parse_response<T>(result: ApiResult<T>) -> Result<T, ClientError> {
         match result {
             ApiResult::Ok(v) => Ok(v.data),
@@ -58,6 +80,12 @@ pub enum ApiResult<T> {
 }
 
 impl Default for Client {
+    /// Constructs a basic client with no API Key using the default URL.
+    /// 
+    /// # Panics
+    /// This method will panic if the construction of the reqwest http client fails,
+    /// if a TLS backend cannot be initialized, or the resolver
+    /// cannot load the system configuration.
     fn default() -> Self {
         Self::new(None).unwrap()
     }

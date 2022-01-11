@@ -1,8 +1,6 @@
 mod images;
 mod legality;
 
-use std::str::FromStr;
-
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -67,7 +65,7 @@ pub struct SearchSetsRequest {
 impl SearchSetsRequest {
     pub fn new(query: &str) -> Self {
         SearchSetsRequest {
-            query: Some(String::from_str(query).unwrap()),
+            query: Some(String::from(query)),
             page: None,
             page_size: None,
             order_by: None,

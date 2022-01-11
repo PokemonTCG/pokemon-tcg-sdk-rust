@@ -6,19 +6,18 @@ pub mod types;
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
-
     use crate::card::{Card, SearchCardsRequest};
     use crate::client::{ApiResult, DataEnvelope};
     use crate::set::{GetSetRequest, SearchSetsRequest};
     use crate::{card::GetCardRequest, client::Client};
-    use wiremock::matchers::{path, query_param, header};
+    use wiremock::matchers::{header, path, query_param};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     #[tokio::test]
     async fn get_card_sends_request_with_proper_id() {
         let mock_server = MockServer::start().await;
         let client = Client::with_base_url(mock_server.uri().as_str(), None).unwrap();
+
         let test_card_id = "base1-5";
 
         Mock::given(path(format!("/cards/{}", test_card_id)))
@@ -68,10 +67,10 @@ mod tests {
 
         let _result = client
             .search_cards(SearchCardsRequest {
-                query: Some(String::from_str(query).unwrap()),
+                query: Some(String::from(query)),
                 page: Some(page),
                 page_size: Some(page_size),
-                order_by: Some(String::from_str(order_by).unwrap()),
+                order_by: Some(String::from(order_by)),
             })
             .await;
     }
@@ -118,10 +117,10 @@ mod tests {
 
         let _result = client
             .search_sets(SearchSetsRequest {
-                query: Some(String::from_str(query).unwrap()),
+                query: Some(String::from(query)),
                 page: Some(page),
                 page_size: Some(page_size),
-                order_by: Some(String::from_str(order_by).unwrap()),
+                order_by: Some(String::from(order_by)),
             })
             .await;
     }

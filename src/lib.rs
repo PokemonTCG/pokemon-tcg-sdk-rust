@@ -12,7 +12,7 @@ mod tests {
     use crate::client::{ApiResult, DataEnvelope};
     use crate::set::{GetSetRequest, SearchSetsRequest};
     use crate::{card::GetCardRequest, client::Client};
-    use wiremock::matchers::{path, query_param};
+    use wiremock::matchers::{path, query_param, header};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     #[tokio::test]
@@ -22,6 +22,23 @@ mod tests {
         let test_card_id = "base1-5";
 
         Mock::given(path(format!("/cards/{}", test_card_id)))
+            .respond_with(ResponseTemplate::new(400))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let _result = client.get_card(GetCardRequest::new(test_card_id)).await;
+    }
+
+    #[tokio::test]
+    async fn appends_api_key_to_header() {
+        let mock_server = MockServer::start().await;
+        let api_key = "abc123";
+        let client = Client::with_base_url(mock_server.uri().as_str(), Some(api_key)).unwrap();
+        let test_card_id = "base1-5";
+
+        Mock::given(path(format!("/cards/{}", test_card_id)))
+            .and(header("X-Api-Key", api_key))
             .respond_with(ResponseTemplate::new(400))
             .expect(1)
             .mount(&mock_server)

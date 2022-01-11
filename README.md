@@ -11,6 +11,13 @@ This is the Pokémon TCG SDK Rust implementation. It is a wrapper around the Pok
 pokemon-tcg-sdk = "0.1.0"
 ```
 
+### Using an API Key
+```rust 
+// This method fails if a TLS backend cannot be initialized, or the resolver cannot load the system configuration.
+let client = Client::new(Some("YOUR_API_KEY"))?;
+```
+
+
 ### Cards
 
 #### Get a single card by ID

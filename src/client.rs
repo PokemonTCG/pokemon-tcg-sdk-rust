@@ -25,10 +25,11 @@ impl Client {
     pub(super) fn get_http_client(
         api_key: Option<&str>,
     ) -> Result<reqwest::Client, Box<dyn Error>> {
-        let http_client = reqwest::Client::builder();
+        let mut http_client = reqwest::Client::builder();
         if let Some(key) = api_key {
             let mut headers = reqwest::header::HeaderMap::new();
             headers.insert("X-Api-Key", reqwest::header::HeaderValue::from_str(key)?);
+            http_client = http_client.default_headers(headers);
         }
 
         http_client.build().map_err(|e| e.into())

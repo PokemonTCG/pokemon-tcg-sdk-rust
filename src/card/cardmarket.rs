@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Prices {
     /// The average sell price as shown in the chart at the website for non-foils
     #[serde(alias = "averageSellPrice")]
@@ -46,7 +46,7 @@ pub struct Prices {
     pub reverse_holo_avg30: Option<f32>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct CardMarket {
     /// The URL to the cardmarket store page to purchase this card.
     pub url: String,

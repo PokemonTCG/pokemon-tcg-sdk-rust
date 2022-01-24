@@ -12,7 +12,7 @@ use self::{images::SetImages, legality::Legality};
 
 /// The Set Object
 /// https://docs.pokemontcg.io/api-reference/sets/set-object
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[cfg_attr(test, derive(Default))]
 pub struct Set {
     /// Unique identifier for the object.

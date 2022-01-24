@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[cfg_attr(test, derive(Default))]
 pub struct SetImages {
     /// The url to the symbol image.

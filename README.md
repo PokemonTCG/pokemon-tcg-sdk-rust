@@ -8,7 +8,7 @@ This is the Pokémon TCG SDK Rust implementation. It is a wrapper around the Pok
 
 ```toml
 [dependencies]
-pokemon-tcg-sdk = "0.2.0"
+pokemon-tcg-sdk = "0.3.0"
 ```
 
 ### Using an API Key

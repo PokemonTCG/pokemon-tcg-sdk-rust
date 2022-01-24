@@ -1,12 +1,12 @@
-mod ability;
-mod ancient_trait;
-mod attack;
-mod cardmarket;
-mod image;
-mod legality;
-mod resistance;
-mod tcgplayer;
-mod weakness;
+pub mod ability;
+pub mod ancient_trait;
+pub mod attack;
+pub mod cardmarket;
+pub mod image;
+pub mod legality;
+pub mod resistance;
+pub mod tcgplayer;
+pub mod weakness;
 
 use std::str::FromStr;
 
@@ -25,7 +25,7 @@ use self::{
 
 /// The Card Object
 /// https://docs.pokemontcg.io/api-reference/cards/card-object
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(test, derive(Default))]
 pub struct Card {
     /// Unique identifier for the object.
